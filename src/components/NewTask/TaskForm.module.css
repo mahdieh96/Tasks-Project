@@ -6,3 +6,7 @@
 .form input {
   flex: 1;
 }
+.error {
+  color: red;
+  margin-top: 0.5rem;
+}
