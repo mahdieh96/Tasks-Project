@@ -7,7 +7,9 @@ export const TaskForm = () => {
   const inputRef = useRef();
   const [isValid, setIsValid] = useState(true);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const addTaskHandler = async (task) => {
+    setIsLoading(true);
     setError(null);
     try {
       const newTask = { name: task, id: Math.random() };
@@ -25,6 +27,7 @@ export const TaskForm = () => {
     } catch (error) {
       setError(error.message);
     }
+    setIsLoading(false);
   };
 
   const submitHandler = (e) => {
@@ -49,7 +52,7 @@ export const TaskForm = () => {
     <Card>
       <form className={classes.form} onSubmit={submitHandler}>
         <Input ref={inputRef} onChange={inputChangeHandler} />
-        <Button type="submit">Add Task</Button>
+        <Button type="submit">{isLoading ? "Loading" : "Add Task"}</Button>
       </form>
       {!isValid && <p className={classes.error}>input can not be empty</p>}
 
