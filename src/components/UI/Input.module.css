@@ -1,0 +1,11 @@
+.input {
+  font: inherit;
+  padding: 0.25rem;
+  border: none;
+  border-bottom: 3px solid #ccc;
+  outline: 0;
+}
+
+.input:focus {
+  border-color: #4d1601;
+}
