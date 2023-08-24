@@ -1,0 +1,8 @@
+.form {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.form input {
+  flex: 1;
+}
