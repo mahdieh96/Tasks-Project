@@ -5,22 +5,45 @@ import classes from "./TaskForm.module.css";
 import { Card } from "../UI/Card";
 export const TaskForm = () => {
   const inputRef = useRef();
-  const [error, setError] = useState(false);
+  const [isValid, setIsValid] = useState(true);
+  const [error, setError] = useState(null);
+  const addTaskHandler = async (task) => {
+    setError(null);
+    try {
+      const newTask = { name: task, id: Math.random() };
+      const response = await fetch(
+        "https://taskproject-aa787-default-rtdb.asia-southeast1.firebasedatabase.app/tasks.json",
+        {
+          body: JSON.stringify(newTask),
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Can not send data.");
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
-
+    //validation
     if (inputRef.current.value.trim().length === 0) {
-      setError(true);
+      setIsValid(false);
       return;
     }
+    //send data to server
+    addTaskHandler(inputRef.current.value.trim());
   };
+
   const inputChangeHandler = () => {
     if (inputRef.current.value.trim().length > 0) {
-      setError(false);
+      setIsValid(true);
       return;
     }
-    setError(true);
+    setIsValid(false);
   };
   return (
     <Card>
@@ -28,7 +51,9 @@ export const TaskForm = () => {
         <Input ref={inputRef} onChange={inputChangeHandler} />
         <Button type="submit">Add Task</Button>
       </form>
-      {error && <p className={classes.error}>input can not be empty</p>}
+      {!isValid && <p className={classes.error}>input can not be empty</p>}
+
+      {error && <p className={classes.error}>problem with server</p>}
     </Card>
   );
 };
