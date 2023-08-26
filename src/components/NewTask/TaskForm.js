@@ -3,34 +3,16 @@ import { Input } from "../UI/Input";
 import { Button } from "../UI/Button";
 import classes from "./TaskForm.module.css";
 import { Card } from "../UI/Card";
+
+import { useHttp } from "../hooks/use-http";
 export const TaskForm = (props) => {
-  console.log("Tasksform rendering");
-  const inputRef = useRef();
-  const [isValid, setIsValid] = useState(true);
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const addTaskHandler = async (task) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const newTask = { name: task, id: Math.random() };
-      const response = await fetch(
-        "https://taskproject-aa787-default-rtdb.asia-southeast1.firebasedatabase.app/tasks.json",
-        {
-          body: JSON.stringify(newTask),
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Can not send data.");
-      }
-      props.onAddNewTask(newTask);
-    } catch (error) {
-      setError(error.message);
-    }
-    setIsLoading(false);
+  const applyData = (dataName, data) => {
+    props.onAddNewTask({ name: dataName, id: data.name });
   };
+  const inputRef = useRef();
+
+  const [isValid, setIsValid] = useState(true);
+  const { error, isLoading, sendRequest } = useHttp();
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -40,7 +22,17 @@ export const TaskForm = (props) => {
       return;
     }
     //send data to server
-    addTaskHandler(inputRef.current.value.trim());
+    sendRequest(
+      {
+        url: "https://taskproject-aa787-default-rtdb.asia-southeast1.firebasedatabase.app/tasks.json",
+        method: "POST",
+        body: {
+          name: inputRef.current?.value.trim(),
+        },
+        headers: { "Content-Type": "application/json" },
+      },
+      applyData.bind(null, inputRef.current.value.trim())
+    );
   };
 
   const inputChangeHandler = () => {
