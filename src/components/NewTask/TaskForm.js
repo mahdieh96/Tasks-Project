@@ -3,7 +3,8 @@ import { Input } from "../UI/Input";
 import { Button } from "../UI/Button";
 import classes from "./TaskForm.module.css";
 import { Card } from "../UI/Card";
-export const TaskForm = () => {
+export const TaskForm = (props) => {
+  console.log("Tasksform rendering");
   const inputRef = useRef();
   const [isValid, setIsValid] = useState(true);
   const [error, setError] = useState(null);
@@ -24,6 +25,7 @@ export const TaskForm = () => {
       if (!response.ok) {
         throw new Error("Can not send data.");
       }
+      props.onAddNewTask(newTask);
     } catch (error) {
       setError(error.message);
     }
